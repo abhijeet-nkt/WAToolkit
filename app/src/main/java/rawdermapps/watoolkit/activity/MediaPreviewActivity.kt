@@ -7,7 +7,6 @@ import android.os.Environment
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.github.jorgecastilloprz.listeners.FABProgressListener
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -18,7 +17,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_preview.*
-import kotlinx.android.synthetic.main.appbar.*
 import rawdermapps.watoolkit.GoogleAdsHelper
 import rawdermapps.watoolkit.R
 import java.io.File
@@ -52,7 +50,7 @@ class MediaPreviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
 
-        setSupportActionBar(appbar)
+        setSupportActionBar(findViewById(R.id.appbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         mMediaType = intent.getIntExtra(EXTRA_MEDIA_TYPE, 0)
