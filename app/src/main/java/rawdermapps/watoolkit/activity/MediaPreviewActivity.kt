@@ -84,7 +84,7 @@ class MediaPreviewActivity : AppCompatActivity() {
         //Set up interstitial ads
         MobileAds.initialize(this)
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = GoogleAdsHelper.TEST_INTERSTITIAL_UNIT_ID
+        mInterstitialAd.adUnitId = GoogleAdsHelper.INTERSTITIAL_UNIT_ID
         mInterstitialAd.loadAd(AdRequest.Builder().build())
     }
 
