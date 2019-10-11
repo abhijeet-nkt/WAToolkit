@@ -16,7 +16,12 @@ import rawdermapps.watoolkit.R
 class AboutAppActivity :AppCompatActivity() {
 
     private lateinit var listAdapter :ArrayAdapter<String>
-    private val listItems = arrayOf("Email Us", "Open Source Licences")
+
+    private val listItems = arrayOf(
+        "Contact us",
+        "Open source licences",
+        "Privacy policy"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +30,7 @@ class AboutAppActivity :AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.appbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        tv_app_ver.text = getString(R.string.app_name) + AppConstants.APP_VERSION
+        tv_app_ver.text = "${getString(R.string.app_name)} ${AppConstants.APP_VERSION}"
 
         listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listItems)
         about_list.adapter = listAdapter
@@ -39,6 +44,13 @@ class AboutAppActivity :AppCompatActivity() {
                 }
 
                 1 -> { showLicences() }
+
+                2 -> {
+                    Intent(Intent.ACTION_VIEW).apply {
+                        data = Uri.parse("https://rawderm.github.io/")
+                        startActivity(this)
+                    }
+                }
             }
         }
     }

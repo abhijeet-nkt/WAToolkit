@@ -56,8 +56,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(appbar)
-
         currentFragment = SendMessageFragment()
+        
+        if (savedInstanceState == null)
+            supportActionBar?.title = ""
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, currentFragment)
@@ -102,7 +104,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         when (item.itemId) {
             R.id.nav_about -> startActivity(Intent(this, AboutAppActivity::class.java))
-            R.id.nav_rate -> Toast.makeText(this, "Not implemented!", Toast.LENGTH_SHORT).show()
+            R.id.nav_rate -> {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=rawdermapps.watoolkit")))
+            }
+            R.id.nav_share -> {
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "http://play.google.com/store/apps/details?id=rawdermapps.watoolkit")
+                    startActivity(Intent.createChooser(this, "Share with..."))
+                }
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -121,7 +132,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 
         when (item.itemId) {
             // 'Send message' tab
@@ -130,6 +140,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 fragmentTransaction
                     .replace(R.id.container, currentFragment)
                     .commit()
+                supportActionBar?.title = ""
                 return@OnNavigationItemSelectedListener true
             }
 
@@ -140,6 +151,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 fragmentTransaction
                     .replace(R.id.container, currentFragment)
                     .commit()
+                supportActionBar?.title = getString(R.string.app_name)
                 return@OnNavigationItemSelectedListener true
             }
 
@@ -150,6 +162,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 fragmentTransaction
                     .replace(R.id.container, currentFragment)
                     .commit()
+                supportActionBar?.title = getString(R.string.app_name)
                 return@OnNavigationItemSelectedListener true
             }
 

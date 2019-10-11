@@ -12,11 +12,14 @@ import rawdermapps.watoolkit.activity.MediaPreviewActivity
 import rawdermapps.watoolkit.adapter.MediaFilesAdapter
 import rawdermapps.watoolkit.model.MediaItem
 import android.content.Intent
+import android.widget.TextView
 
 class ImageStatusFragment : Fragment() {
 
+    private lateinit var adapter: MediaFilesAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.frag_image_status, container, false)
+        inflater.inflate(R.layout.items_list_layout, container, false)
 
     /* Adapter is set here to make sure that the UI thread does not blocks
      * to load thumbnails while fragment is being attached */
@@ -24,9 +27,13 @@ class ImageStatusFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.apply {
-            this as RecyclerView
-            layoutManager = GridLayoutManager(context, 2)
+            val recycler = findViewById<RecyclerView>(R.id.recycler)
+            recycler.layoutManager = GridLayoutManager(context, 2)
             adapter = MediaFilesAdapter(view.context, MediaFilesAdapter.MediaType.PICTURES) {onItemClick(it)}
+            recycler.adapter = adapter
+
+            if (adapter.isEmpty)
+                findViewById<TextView>(R.id.tv_no_items).visibility = View.VISIBLE
         }
     }
 

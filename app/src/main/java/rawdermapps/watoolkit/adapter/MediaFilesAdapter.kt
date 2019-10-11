@@ -29,6 +29,10 @@ class MediaFilesAdapter(private val context :Context, mediaType: MediaType, priv
 
     private val items = ArrayList<MediaItem>()
 
+    /* True if there are no files */
+    var isEmpty :Boolean = false
+        private set
+
     init {
         val extension = when (mediaType) {
             MediaType.PICTURES -> ".jpg"
@@ -38,11 +42,13 @@ class MediaFilesAdapter(private val context :Context, mediaType: MediaType, priv
         val statusDir = File(Environment.getExternalStorageDirectory(), "/WhatsApp/Media/.Statuses")
         Log.d("Adapter", "statusDir: $statusDir")
 
+        val files = statusDir.listFiles()
+        isEmpty = files.isEmpty()
+
         Thread {
-            val files = statusDir.listFiles()
-            if (files == null) {
+            if (files == null)
                 Log.e("FilesAdapter", "files == null !")
-            } else {
+            else {
                 for (file in files) {
                     if (file.name.endsWith(extension, true))
                         items.add(MediaItem(file, mediaType))

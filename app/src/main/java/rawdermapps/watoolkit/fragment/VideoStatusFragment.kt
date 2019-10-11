@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,8 +16,10 @@ import rawdermapps.watoolkit.model.MediaItem
 
 class VideoStatusFragment : Fragment() {
 
+    private lateinit var adapter: MediaFilesAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.frag_video_status, container, false)
+        inflater.inflate(R.layout.items_list_layout, container, false)
 
     /* Adapter is set here to make sure that the UI thread does not blocks
      * to load thumbnails while fragment is being attached */
@@ -24,9 +27,13 @@ class VideoStatusFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.apply {
-            this as RecyclerView
-            layoutManager = GridLayoutManager(context, 2)
-            adapter = MediaFilesAdapter(view.context, MediaFilesAdapter.MediaType.VIDEOS) { onItemClick(it) }
+            val recycler = findViewById<RecyclerView>(R.id.recycler)
+            recycler.layoutManager = GridLayoutManager(context, 2)
+            adapter = MediaFilesAdapter(view.context, MediaFilesAdapter.MediaType.VIDEOS) {onItemClick(it)}
+            recycler.adapter = adapter
+
+            if (adapter.isEmpty)
+                findViewById<TextView>(R.id.tv_no_items).visibility = View.VISIBLE
         }
     }
 

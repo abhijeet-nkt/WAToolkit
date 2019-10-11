@@ -4,13 +4,17 @@
     tools:showIn="navigation_view">
 
     <group>
-        <item
-                android:id="@+id/nav_rate"
-                android:icon="@drawable/ic_rate_us"
-                android:title="Rate us" />
+        <item android:id="@+id/nav_rate"
+            android:icon="@drawable/ic_rate_us"
+            android:title="@string/act_rate_us" />
+
+        <item android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share"
+            android:title="@string/act_share"/>
+
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_about"
-            android:title="About App" />
+            android:title="@string/act_about_app" />
     </group>
 </menu>
