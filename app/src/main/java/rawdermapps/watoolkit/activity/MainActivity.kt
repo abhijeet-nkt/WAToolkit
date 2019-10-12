@@ -148,9 +148,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.navigation_image_status -> {
                 storagePermissionFlow()
                 currentFragment = ImageStatusFragment()
-                fragmentTransaction
-                    .replace(R.id.container, currentFragment)
-                    .commit()
                 supportActionBar?.title = getString(R.string.app_name)
                 return@OnNavigationItemSelectedListener true
             }
@@ -159,9 +156,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.navigation_video_status -> {
                 storagePermissionFlow()
                 currentFragment = VideoStatusFragment()
-                fragmentTransaction
-                    .replace(R.id.container, currentFragment)
-                    .commit()
                 supportActionBar?.title = getString(R.string.app_name)
                 return@OnNavigationItemSelectedListener true
             }
@@ -230,8 +224,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Reload the fragment
                     supportFragmentManager.beginTransaction()
-                        .detach(currentFragment)
-                        .attach(currentFragment)
+                        .replace(R.id.container, currentFragment)
                         .commit()
                 } else {
                     //Keep trying until user allows the permission, lol
