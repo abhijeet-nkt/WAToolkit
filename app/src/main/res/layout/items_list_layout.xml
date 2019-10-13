@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/recycler"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_no_items"
@@ -17,6 +17,6 @@
         android:gravity="center"
         android:padding="32dp"
         android:textSize="24sp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </FrameLayout>

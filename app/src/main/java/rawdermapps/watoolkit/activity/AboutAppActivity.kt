@@ -10,12 +10,12 @@ import com.franmontiel.attributionpresenter.AttributionPresenter
 import com.franmontiel.attributionpresenter.entities.Attribution
 import com.franmontiel.attributionpresenter.entities.License
 import kotlinx.android.synthetic.main.activity_about_app.*
-import rawdermapps.watoolkit.AppConstants
+import rawdermapps.watoolkit.util.AppConstants
 import rawdermapps.watoolkit.R
 
-class AboutAppActivity :AppCompatActivity() {
+class AboutAppActivity : AppCompatActivity() {
 
-    private lateinit var listAdapter :ArrayAdapter<String>
+    private lateinit var listAdapter: ArrayAdapter<String>
 
     private val listItems = arrayOf(
         "Contact us",
@@ -37,13 +37,18 @@ class AboutAppActivity :AppCompatActivity() {
         about_list.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
-                    Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", AppConstants.DEVELOPER_EMAIL, null)).apply {
+                    Intent(
+                        Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", AppConstants.DEVELOPER_EMAIL, null
+                        )
+                    ).apply {
                         startActivity(Intent.createChooser(this, "Send using"))
                     }
                 }
 
-                1 -> { showLicences() }
+                1 -> {
+                    showLicences()
+                }
 
                 2 -> {
                     Intent(Intent.ACTION_VIEW).apply {
@@ -59,25 +64,28 @@ class AboutAppActivity :AppCompatActivity() {
     private fun showLicences() =
         AttributionPresenter.Builder(this)
             .addAttributions(
-            Attribution.Builder("AttributionPresenter")
-                .addCopyrightNotice("Copyright 2017 Francisco José Montiel Navarro")
-                .addLicense(License.APACHE)
-                .setWebsite("https://github.com/franmontiel/AttributionPresenter")
-                .build())
+                Attribution.Builder("AttributionPresenter")
+                    .addCopyrightNotice("Copyright 2017 Francisco José Montiel Navarro")
+                    .addLicense(License.APACHE)
+                    .setWebsite("https://github.com/franmontiel/AttributionPresenter")
+                    .build()
+            )
 
             .addAttributions(
                 Attribution.Builder("FABProgressCircle")
                     .addCopyrightNotice("Copyright 2015 Jorge Castillo Pérez")
                     .addLicense(License.APACHE)
                     .setWebsite("https://github.com/JorgeCastilloPrz/FABProgressCircle")
-                    .build())
+                    .build()
+            )
 
             .addAttributions(
                 Attribution.Builder("Country Code Picker Library")
                     .addCopyrightNotice("Copyright (C) 2016 Harsh Bhakta")
                     .addLicense(License.APACHE)
                     .setWebsite("https://github.com/hbb20/CountryCodePickerProject")
-                    .build())
+                    .build()
+            )
 
             .build()
             .showDialog("Open source licenses")

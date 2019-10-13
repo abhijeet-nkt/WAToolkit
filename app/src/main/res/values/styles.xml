@@ -2,12 +2,14 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">#8792EB</item>
-        <item name="colorPrimaryDark">#8792EB</item>
-        <item name="colorAccent">#8792EB</item>
-        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
-        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+
+        <!-- Did this on Client request -->
+        <item name="colorPrimary">@color/colorAppBlue</item>
+        <item name="colorPrimaryDark">@color/colorAppBlueDark</item>
+        <item name="colorAccent">@color/colorAppBlue</item>
+
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="android:textColorSecondary">@color/textColorLight</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

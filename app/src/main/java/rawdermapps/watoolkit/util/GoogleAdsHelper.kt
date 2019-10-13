@@ -1,4 +1,4 @@
-package rawdermapps.watoolkit
+package rawdermapps.watoolkit.util
 
 object GoogleAdsHelper {
     const val TEST_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"

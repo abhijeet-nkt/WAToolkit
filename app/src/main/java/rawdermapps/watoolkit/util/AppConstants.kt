@@ -1,4 +1,4 @@
-package rawdermapps.watoolkit
+package rawdermapps.watoolkit.util
 
 object AppConstants {
 

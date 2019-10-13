@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">WhatsNery</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -11,4 +11,5 @@
     <string name="act_share">Share</string>
     <string name="act_about_app">About App</string>
     <string name="act_privacy_policy">Privacy Policy</string>
+    <string name="warn_invalid_phone_number">Invalid phone number!</string>
 </resources>

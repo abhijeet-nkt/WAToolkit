@@ -1,23 +1,20 @@
 package rawdermapps.watoolkit.model
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.ThumbnailUtils
-import android.provider.MediaStore
 import android.widget.ImageView
 import rawdermapps.watoolkit.adapter.MediaFilesAdapter
 import rawdermapps.watoolkit.task.BitmapLoaderTask
 import java.io.File
 import java.lang.ref.WeakReference
 
-class MediaItem(val file : File, val type :MediaFilesAdapter.MediaType) {
+class MediaItem(val file: File, val type: MediaFilesAdapter.MediaType) {
 
-    private var bitmapCache :Bitmap? = null
+    private var bitmapCache: Bitmap? = null
 
-    fun loadBitmap(imageView : WeakReference<ImageView?>) {
+    fun loadBitmap(imageView: WeakReference<ImageView?>) {
         if (bitmapCache == null)
             BitmapLoaderTask(file.absolutePath, type) {
-                imageView.get()?.apply { post {setImageBitmap(it) } }
+                imageView.get()?.apply { post { setImageBitmap(it) } }
             }.execute()
 
         //There's already a bitmap cached, so use it rather

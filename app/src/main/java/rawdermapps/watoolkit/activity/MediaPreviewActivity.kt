@@ -17,7 +17,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_preview.*
-import rawdermapps.watoolkit.GoogleAdsHelper
+import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.R
 import java.io.File
 import java.io.FileInputStream
@@ -26,8 +26,10 @@ import java.io.FileOutputStream
 class MediaPreviewActivity : AppCompatActivity() {
 
     companion object {
-        const val EXTRA_FILE_PATH = "rawdermapps.watoolkit.activity.MediaPreviewActivity.EXTRA_FILE_PATH"
-        const val EXTRA_MEDIA_TYPE = "rawdermapps.watoolkit.activity.MediaPreviewActivity.EXTRA_MEDIA_TYPE"
+        const val EXTRA_FILE_PATH =
+            "rawdermapps.watoolkit.activity.MediaPreviewActivity.EXTRA_FILE_PATH"
+        const val EXTRA_MEDIA_TYPE =
+            "rawdermapps.watoolkit.activity.MediaPreviewActivity.EXTRA_MEDIA_TYPE"
 
         const val MEDIA_TYPE_PICTURE = 1
         const val MEDIA_TYPE_VIDEO = 2
@@ -38,11 +40,11 @@ class MediaPreviewActivity : AppCompatActivity() {
     //True when fab is once pressed by user
     private var fabPressed = false
 
-    private var exoPlayer :SimpleExoPlayer? = null
+    private var exoPlayer: SimpleExoPlayer? = null
 
-    private var mMediaType :Int = 0
-    private var mFilePath :String? = null
-    private var mUri :Uri? = null
+    private var mMediaType: Int = 0
+    private var mFilePath: String? = null
+    private var mUri: Uri? = null
 
     private lateinit var mInterstitialAd: InterstitialAd
 
@@ -69,7 +71,6 @@ class MediaPreviewActivity : AppCompatActivity() {
         fabCircle.attachListener {
             Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
             fabCircle.hide()
-            showAd()
         }
 
         fab.setOnClickListener {
@@ -97,8 +98,10 @@ class MediaPreviewActivity : AppCompatActivity() {
         exoPlayer = ExoPlayerFactory.newSimpleInstance(this)
         exo_player_view.player = exoPlayer
 
-        val dataSourceFactory = DefaultDataSourceFactory(this,
-            Util.getUserAgent(this, "WAToolkit"))
+        val dataSourceFactory = DefaultDataSourceFactory(
+            this,
+            Util.getUserAgent(this, "WAToolkit")
+        )
 
         val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .createMediaSource(mUri)
@@ -115,8 +118,12 @@ class MediaPreviewActivity : AppCompatActivity() {
         val source = File(mFilePath)
 
         //The folder where we save file
-        val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Status Saver")
-        dir.mkdir() //Create the folder if it doesn't exists
+        val dir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            "WhatsNery"
+        )
+
+        dir.mkdir() //Create the folder, as it may not exist
 
         val dest = File(dir, source.name) //This is where we save file
         val inputStream = FileInputStream(source)
@@ -131,17 +138,18 @@ class MediaPreviewActivity : AppCompatActivity() {
             outputStream.write(buffer, 0, chunkLen)
         }
 
-        fabCircle.beginFinalAnimation()
-
         inputStream.close()
         outputStream.flush()
         outputStream.close()
         addToGallery(dest.absolutePath)
+
+        fabCircle.beginFinalAnimation()
+        showAd()
     }.run()
 
     //Scans the file so as to make it visible in the gallery
-    private fun addToGallery(path :String) =
-        MediaScannerConnection.scanFile(this, arrayOf(path), null) { _,_ -> }
+    private fun addToGallery(path: String) =
+        MediaScannerConnection.scanFile(this, arrayOf(path), null) { _, _ -> }
 
     /* Shows an interstitial ad */
     private fun showAd() {

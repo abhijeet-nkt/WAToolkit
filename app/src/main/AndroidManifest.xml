@@ -28,11 +28,14 @@
         <activity
             android:name=".activity.MediaPreviewActivity"
             android:label="Preview"
-            android:parentActivityName=".activity.MainActivity"/>
+            android:parentActivityName=".activity.MainActivity" />
 
-        <activity android:name=".activity.AboutAppActivity"
+        <activity
+            android:name=".activity.AboutAppActivity"
             android:label="About"
-            android:parentActivityName=".activity.MainActivity"/>
+            android:parentActivityName=".activity.MainActivity" />
+
+        <activity android:name=".activity.IntroActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
