@@ -18,12 +18,13 @@
         android:layout_weight="1"
         android:id="@+id/container" />
 
-    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/bannerAdView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-7395572779611582/1495937970" />
+     <FrameLayout
+         android:id="@+id/bannerAdHolder"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         tools:background="@color/colorYellow"
+         tools:alpha="0.3"
+         tools:layout_height="60dp"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"

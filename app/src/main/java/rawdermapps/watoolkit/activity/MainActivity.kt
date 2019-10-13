@@ -15,16 +15,20 @@ import androidx.core.app.NavUtils
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_content.*
 import kotlinx.android.synthetic.main.appbar.*
+import rawdermapps.watoolkit.BuildConfig
 import rawdermapps.watoolkit.R
 import rawdermapps.watoolkit.fragment.ImageStatusFragment
 import rawdermapps.watoolkit.fragment.SendMessageFragment
 import rawdermapps.watoolkit.fragment.VideoStatusFragment
+import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.util.PreferenceManager
 
 /* This activity doesn't handles much of the app's logic
@@ -85,7 +89,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //Set-up banner ads
         MobileAds.initialize(this) {}
-        bannerAdView.loadAd(AdRequest.Builder().build())
+        AdView(this).apply {
+            adSize = AdSize.BANNER
+
+            adUnitId =
+                if (BuildConfig.DEBUG)
+                    GoogleAdsHelper.TEST_BANNER_UNIT_ID
+                else
+                    GoogleAdsHelper.BANNER_UNIT_ID
+
+            loadAd(AdRequest.Builder().build())
+            bannerAdHolder.addView(this)
+        }
     }
 
 

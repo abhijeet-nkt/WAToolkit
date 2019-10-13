@@ -17,6 +17,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_preview.*
+import rawdermapps.watoolkit.BuildConfig
 import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.R
 import java.io.File
@@ -84,9 +85,13 @@ class MediaPreviewActivity : AppCompatActivity() {
 
         //Set up interstitial ads
         MobileAds.initialize(this)
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = GoogleAdsHelper.INTERSTITIAL_UNIT_ID
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
+        InterstitialAd(this).apply {
+            adUnitId =
+                if (BuildConfig.DEBUG)
+                    GoogleAdsHelper.TEST_INTERSTITIAL_UNIT_ID
+                else GoogleAdsHelper.INTERSTITIAL_UNIT_ID
+            loadAd(AdRequest.Builder().build())
+        }
     }
 
     override fun onDestroy() {
