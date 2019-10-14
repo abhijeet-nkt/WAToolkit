@@ -116,7 +116,7 @@
                     android:inputType="textMultiLine"
                     android:singleLine="false"
                     android:id="@+id/edit_message"
-                    android:hint="@string/message_input_hint"
+                    android:hint="@string/input_hint_message"
                     android:lines="2"
                     android:foregroundGravity="bottom" />
             </com.google.android.material.textfield.TextInputLayout>

@@ -2,14 +2,23 @@
     <string name="app_name">WhatsNery</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="message_input_hint">Type a message (optional)</string>
+
+    <string name="input_hint_message">Type a message (optional)</string>
     <string name="input_hint_phone_number">Phone number</string>
+
     <string name="action_open_wa">Open in WhatsApp</string>
+
     <string name="label_hint_send_message">Send message</string>
+
     <string name="info_no_status">You don\'t have any status here for now ! Come back again later :)</string>
+
     <string name="act_rate_us">Rate us</string>
     <string name="act_share">Share</string>
     <string name="act_about_app">About App</string>
-    <string name="act_privacy_policy">Privacy Policy</string>
+
+    <string name="hint_contact_us">Contact us</string>
+    <string name="hint_open_source_licences">Open source licences</string>
+    <string name="hint_privacy_policy">Privacy policy</string>
+
     <string name="warn_invalid_phone_number">Invalid phone number!</string>
 </resources>

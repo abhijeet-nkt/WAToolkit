@@ -18,9 +18,9 @@ class AboutAppActivity : AppCompatActivity() {
     private lateinit var listAdapter: ArrayAdapter<String>
 
     private val listItems = arrayOf(
-        "Contact us",
-        "Open source licences",
-        "Privacy policy"
+        getString(R.string.hint_contact_us),
+        getString(R.string.hint_open_source_licences),
+        getString(R.string.hint_privacy_policy)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +87,13 @@ class AboutAppActivity : AppCompatActivity() {
                     .build()
             )
 
+            .addAttributions(
+                Attribution.Builder("AppIntro")
+                    .addLicense(License.APACHE)
+                    .setWebsite("https://github.com/AppIntro/AppIntro")
+                    .build()
+            )
+
             .build()
-            .showDialog("Open source licenses")
+            .showDialog(getString(R.string.hint_privacy_policy))
 }
