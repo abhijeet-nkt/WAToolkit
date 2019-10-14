@@ -11,7 +11,6 @@ import rawdermapps.watoolkit.R
 import rawdermapps.watoolkit.fragment.MediaType
 import rawdermapps.watoolkit.model.MediaItem
 import java.io.File
-import java.lang.ref.WeakReference
 
 class MediaFilesAdapter(
     mediaType: MediaType,
@@ -24,7 +23,7 @@ class MediaFilesAdapter(
 
         fun bind(pos: Int) {
             itemView.setOnClickListener { onClick(items[pos]) }
-            items[pos].loadBitmap(WeakReference(thumbnailView))
+            items[pos].loadBitmap(thumbnailView)
         }
     }
 

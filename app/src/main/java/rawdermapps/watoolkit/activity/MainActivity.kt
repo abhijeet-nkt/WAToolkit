@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NavUtils
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -46,14 +47,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var currentFragment: Fragment
     private var currentTab = TAB_MESSAGE
 
-    /* Returns the id of the navigation item based on the value of `currentTab` */
-    private val currentNavigationId: Int
-        get() =
-            when (currentTab) {
-                TAB_IMAGE_STATUS -> R.id.navigation_image_status
-                TAB_VIDEO_STATUS -> R.id.navigation_video_status
-                else -> R.id.navigation_send_message
-            }
+    private lateinit var mFragmentManager : FragmentManager
+
+    private val sendMessageFragment = SendMessageFragment()
+    private val imageStatusFragment = StatusListFragment.newInstance(MediaType.PICTURE)
+    private val videoStatusFragment = StatusListFragment.newInstance(MediaType.VIDEO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,28 +61,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setContentView(R.layout.activity_main)
 
+        //Appbar
         setSupportActionBar(appbar)
-        currentFragment = SendMessageFragment()
-
         if (savedInstanceState == null)
             supportActionBar?.title = ""
 
-        supportFragmentManager.beginTransaction()
+        //Fragment manager
+        mFragmentManager = supportFragmentManager
+        currentFragment = sendMessageFragment
+        mFragmentManager.beginTransaction()
             .replace(R.id.container, currentFragment)
             .commit()
 
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        //Bottom navigation
+        bottom_navgation.setOnNavigationItemSelectedListener(mBottomNavigationItemListener)
 
+        //App drawer
         val toggle = ActionBarDrawerToggle(
             this,
             drawer_layout,
             appbar,
             R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
+            R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
         nav_view.setNavigationItemSelectedListener(this)
 
         //Set-up banner ads
@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         currentTab = savedInstanceState.getInt(KEY_CURRENT_TAB)
-        navigation.selectedItemId = currentNavigationId
+        bottom_navgation.selectedItemId = currentNavigationId
     }
 
     override fun onBackPressed() {
@@ -161,15 +161,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onOptionsItemSelected(item)
     }
 
-    private val mOnNavigationItemSelectedListener =
+    /* Returns the id of the navigation item based on the value of `currentTab` */
+    private val currentNavigationId: Int
+        get() =
+            when (currentTab) {
+                TAB_IMAGE_STATUS -> R.id.navigation_image_status
+                TAB_VIDEO_STATUS -> R.id.navigation_video_status
+                else -> R.id.navigation_send_message
+            }
+
+    private val mBottomNavigationItemListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
 
             when (item.itemId) {
                 // 'Send message' tab
                 R.id.navigation_send_message -> {
-                    currentFragment = SendMessageFragment()
-                    fragmentTransaction
+                    currentFragment = sendMessageFragment
+                    mFragmentManager.beginTransaction()
                         .replace(R.id.container, currentFragment)
                         .commit()
                     supportActionBar?.title = ""
@@ -178,16 +186,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 // 'Picture status' tab
                 R.id.navigation_image_status -> {
-                    storagePermissionFlow()
-                    currentFragment = StatusListFragment.newInstance(MediaType.PICTURE)
+                    currentFragment = imageStatusFragment
+                    storagePermissionFlow() //This handles the replacing of fragment
                     supportActionBar?.title = getString(R.string.app_name)
                     return@OnNavigationItemSelectedListener true
                 }
 
                 // 'Video status' tab
                 R.id.navigation_video_status -> {
-                    storagePermissionFlow()
-                    currentFragment = StatusListFragment.newInstance(MediaType.VIDEO)
+                    currentFragment = videoStatusFragment
+                    storagePermissionFlow() //This handles the replacing of fragment
                     supportActionBar?.title = getString(R.string.app_name)
                     return@OnNavigationItemSelectedListener true
                 }
@@ -199,11 +207,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     /* Simply requests the permission
      * onRequestPermissionResult() is instantly called after this */
     private fun storagePermissionFlow() {
-        //Directly request first
-        ActivityCompat.requestPermissions(
-            this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            MediaPreviewActivity.REQUEST_WRITE_EXTERNAL_STORAGE
-        )
+        //Request if there's no permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                MediaPreviewActivity.REQUEST_WRITE_EXTERNAL_STORAGE
+            )
+
+        } else {
+            //We have the permission
+            //Replace the fragment
+
+            mFragmentManager.beginTransaction()
+                .replace(R.id.container, currentFragment)
+                .commit()
+        }
     }
 
     /* Shows a proper dialog for telling user about permission
@@ -228,7 +248,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
                     //Change to message tab (User canceled)
-                    navigation.selectedItemId = R.id.navigation_send_message
+                    bottom_navgation.selectedItemId = R.id.navigation_send_message
                 }.setCancelable(false).create().show()
 
             //User clicked 'deny' with 'do not ask again'
@@ -250,7 +270,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
                     //Change to message tab (User canceled)
-                    navigation.selectedItemId = R.id.navigation_send_message
+                    bottom_navgation.selectedItemId = R.id.navigation_send_message
                 }.setCancelable(false).create().show()
         }
     }
@@ -264,7 +284,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             MediaPreviewActivity.REQUEST_WRITE_EXTERNAL_STORAGE -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Reload the fragment
-                    supportFragmentManager.beginTransaction()
+                    mFragmentManager.beginTransaction()
                         .replace(R.id.container, currentFragment)
                         .commit()
                 } else {

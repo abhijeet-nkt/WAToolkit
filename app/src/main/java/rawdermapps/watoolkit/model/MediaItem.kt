@@ -1,24 +1,39 @@
 package rawdermapps.watoolkit.model
 
-import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.widget.ImageView
-import rawdermapps.watoolkit.adapter.MediaFilesAdapter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import rawdermapps.watoolkit.fragment.MediaType
-import rawdermapps.watoolkit.task.BitmapLoaderTask
 import java.io.File
-import java.lang.ref.WeakReference
 
-class MediaItem(val file: File, val type: MediaType) {
+class MediaItem(val file: File, private val type: MediaType) {
 
-    private var bitmapCache: Bitmap? = null
+    fun loadBitmap(imageView: ImageView) {
 
-    fun loadBitmap(imageView: WeakReference<ImageView?>) {
-        if (bitmapCache == null)
-            BitmapLoaderTask(file.absolutePath, type) {
-                imageView.get()?.apply { post { setImageBitmap(it) } }
-            }.execute()
+        when (type) {
+            MediaType.PICTURE -> {
+                Glide.with(imageView)
+                    .asBitmap()
+                    .thumbnail(0.1f)
+                    .load(file)
+                    .into(imageView)
+            }
 
-        //There's already a bitmap cached, so use it rather
-        else imageView.get()?.setImageBitmap(bitmapCache)
+            MediaType.VIDEO -> {
+                MediaMetadataRetriever().also {
+                    it.setDataSource(file.absolutePath)
+                    val duration = it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong()
+                    it.release()
+
+                    Glide.with(imageView)
+                        .asBitmap()
+                        .thumbnail(0.1f)
+                        .load(file)
+                        .apply(RequestOptions().frame(duration/2 * 1000))
+                        .into(imageView)
+                }
+            }
+        }
     }
 }
