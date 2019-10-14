@@ -1,6 +1,5 @@
 package rawdermapps.watoolkit.adapter
 
-import android.content.Context
 import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,18 +8,16 @@ import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import rawdermapps.watoolkit.R
+import rawdermapps.watoolkit.fragment.MediaType
 import rawdermapps.watoolkit.model.MediaItem
 import java.io.File
 import java.lang.ref.WeakReference
 
 class MediaFilesAdapter(
-    private val context: Context,
     mediaType: MediaType,
     private val onClick: (MediaItem) -> Unit
 ) :
     RecyclerView.Adapter<MediaFilesAdapter.ViewHolder>() {
-
-    enum class MediaType { PICTURES, VIDEOS }
 
     inner class ViewHolder(itemView: CardView) : RecyclerView.ViewHolder(itemView) {
         private val thumbnailView: ImageView = itemView.findViewById(R.id.thumbnail)
@@ -39,8 +36,8 @@ class MediaFilesAdapter(
 
     init {
         val extension = when (mediaType) {
-            MediaType.PICTURES -> ".jpg"
-            MediaType.VIDEOS -> ".mp4"
+            MediaType.PICTURE -> ".jpg"
+            MediaType.VIDEO -> ".mp4"
         }
 
         val statusDir = File(Environment.getExternalStorageDirectory(), "/WhatsApp/Media/.Statuses")
@@ -64,8 +61,8 @@ class MediaFilesAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            (LayoutInflater.from(parent.context)
-                .inflate(R.layout.media_item, parent, false) as CardView)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.media_item, parent, false) as CardView
         )
 
     override fun getItemCount(): Int = items.size

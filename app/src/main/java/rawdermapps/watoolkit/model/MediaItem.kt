@@ -3,11 +3,12 @@ package rawdermapps.watoolkit.model
 import android.graphics.Bitmap
 import android.widget.ImageView
 import rawdermapps.watoolkit.adapter.MediaFilesAdapter
+import rawdermapps.watoolkit.fragment.MediaType
 import rawdermapps.watoolkit.task.BitmapLoaderTask
 import java.io.File
 import java.lang.ref.WeakReference
 
-class MediaItem(val file: File, val type: MediaFilesAdapter.MediaType) {
+class MediaItem(val file: File, val type: MediaType) {
 
     private var bitmapCache: Bitmap? = null
 

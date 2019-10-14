@@ -25,9 +25,9 @@ import kotlinx.android.synthetic.main.activity_main_content.*
 import kotlinx.android.synthetic.main.appbar.*
 import rawdermapps.watoolkit.BuildConfig
 import rawdermapps.watoolkit.R
-import rawdermapps.watoolkit.fragment.ImageStatusFragment
+import rawdermapps.watoolkit.fragment.MediaType
+import rawdermapps.watoolkit.fragment.StatusListFragment
 import rawdermapps.watoolkit.fragment.SendMessageFragment
-import rawdermapps.watoolkit.fragment.VideoStatusFragment
 import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.util.PreferenceManager
 
@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // 'Picture status' tab
                 R.id.navigation_image_status -> {
                     storagePermissionFlow()
-                    currentFragment = ImageStatusFragment()
+                    currentFragment = StatusListFragment.newInstance(MediaType.PICTURE)
                     supportActionBar?.title = getString(R.string.app_name)
                     return@OnNavigationItemSelectedListener true
                 }
@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // 'Video status' tab
                 R.id.navigation_video_status -> {
                     storagePermissionFlow()
-                    currentFragment = VideoStatusFragment()
+                    currentFragment = StatusListFragment.newInstance(MediaType.VIDEO)
                     supportActionBar?.title = getString(R.string.app_name)
                     return@OnNavigationItemSelectedListener true
                 }

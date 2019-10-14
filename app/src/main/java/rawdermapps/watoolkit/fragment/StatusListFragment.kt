@@ -14,9 +14,23 @@ import rawdermapps.watoolkit.activity.MediaPreviewActivity
 import rawdermapps.watoolkit.adapter.MediaFilesAdapter
 import rawdermapps.watoolkit.model.MediaItem
 
-class ImageStatusFragment : Fragment() {
+class StatusListFragment : Fragment() {
+
+    companion object {
+
+        private const val ARG_MEDIA_TYPE = "rawdermapps.watoolkit.fragment.SatausListFragment.ARG_MEDIA_TYPE"
+
+        fun newInstance(type: MediaType) :StatusListFragment {
+            return StatusListFragment().apply {
+                val args = Bundle()
+                args.putInt(ARG_MEDIA_TYPE, type.ordinal)
+                arguments = args
+            }
+        }
+    }
 
     private lateinit var adapter: MediaFilesAdapter
+    private lateinit var mediaType: MediaType
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,16 +44,15 @@ class ImageStatusFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mediaType = MediaType.values()[arguments!!.getInt(ARG_MEDIA_TYPE)]
+
         view.apply {
             val recycler = findViewById<RecyclerView>(R.id.recycler)
             recycler.layoutManager = GridLayoutManager(context, 2)
-            adapter = MediaFilesAdapter(view.context, MediaFilesAdapter.MediaType.PICTURES) {
-                onItemClick(it)
-            }
+            adapter = MediaFilesAdapter(mediaType) { onItemClick(it) }
             recycler.adapter = adapter
 
-            if (adapter.isEmpty)
-                findViewById<TextView>(R.id.tv_no_items).visibility = View.VISIBLE
+            if (adapter.isEmpty) findViewById<TextView>(R.id.tv_no_items).visibility = View.VISIBLE
         }
     }
 
@@ -47,7 +60,7 @@ class ImageStatusFragment : Fragment() {
     private fun onItemClick(item: MediaItem) {
         Intent(context, MediaPreviewActivity::class.java).apply {
             putExtra(MediaPreviewActivity.EXTRA_FILE_PATH, item.file.absolutePath)
-            putExtra(MediaPreviewActivity.EXTRA_MEDIA_TYPE, MediaPreviewActivity.MEDIA_TYPE_PICTURE)
+            putExtra(MediaPreviewActivity.EXTRA_MEDIA_TYPE, mediaType.ordinal)
             startActivity(this)
         }
     }

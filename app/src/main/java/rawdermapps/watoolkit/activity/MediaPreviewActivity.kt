@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_preview.*
 import rawdermapps.watoolkit.BuildConfig
 import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.R
+import rawdermapps.watoolkit.fragment.MediaType
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -32,9 +33,6 @@ class MediaPreviewActivity : AppCompatActivity() {
         const val EXTRA_MEDIA_TYPE =
             "rawdermapps.watoolkit.activity.MediaPreviewActivity.EXTRA_MEDIA_TYPE"
 
-        const val MEDIA_TYPE_PICTURE = 1
-        const val MEDIA_TYPE_VIDEO = 2
-
         const val REQUEST_WRITE_EXTERNAL_STORAGE = 20
     }
 
@@ -43,9 +41,9 @@ class MediaPreviewActivity : AppCompatActivity() {
 
     private var exoPlayer: SimpleExoPlayer? = null
 
-    private var mMediaType: Int = 0
-    private var mFilePath: String? = null
-    private var mUri: Uri? = null
+    private lateinit var mMediaType: MediaType
+    private lateinit var mFilePath: String
+    private lateinit var mUri: Uri
 
     private lateinit var mInterstitialAd: InterstitialAd
 
@@ -56,17 +54,21 @@ class MediaPreviewActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.appbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mMediaType = intent.getIntExtra(EXTRA_MEDIA_TYPE, 0)
+        mMediaType = MediaType.values()[intent.getIntExtra(EXTRA_MEDIA_TYPE, 0)]
         mFilePath = intent.getStringExtra(EXTRA_FILE_PATH)
 
         mUri = Uri.fromFile(File(mFilePath))
 
-        if (mMediaType == MEDIA_TYPE_PICTURE) {
-            picture_view.visibility = View.VISIBLE
-            previewPicture()
-        } else if (mMediaType == MEDIA_TYPE_VIDEO) {
-            exo_player_view.visibility = View.VISIBLE
-            previewVideo()
+        when (mMediaType ) {
+            MediaType.PICTURE -> {
+                picture_view.visibility = View.VISIBLE
+                previewPicture()
+            }
+
+            MediaType.VIDEO -> {
+                exo_player_view.visibility = View.VISIBLE
+                previewVideo()
+            }
         }
 
         fabCircle.attachListener {
