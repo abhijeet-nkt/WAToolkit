@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_preview.*
 import rawdermapps.watoolkit.BuildConfig
 import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.R
-import rawdermapps.watoolkit.fragment.MediaType
+import rawdermapps.watoolkit.MediaType
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -74,6 +74,7 @@ class MediaPreviewActivity : AppCompatActivity() {
         fabCircle.attachListener {
             Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
             fabCircle.hide()
+            showAd()
         }
 
         fab.setOnClickListener {
@@ -87,7 +88,7 @@ class MediaPreviewActivity : AppCompatActivity() {
 
         //Set up interstitial ads
         MobileAds.initialize(this)
-        InterstitialAd(this).apply {
+        mInterstitialAd = InterstitialAd(this).apply {
             adUnitId =
                 if (BuildConfig.DEBUG)
                     GoogleAdsHelper.TEST_INTERSTITIAL_UNIT_ID
@@ -117,8 +118,7 @@ class MediaPreviewActivity : AppCompatActivity() {
         exoPlayer?.playWhenReady = true
     }
 
-    private fun previewPicture() =
-        picture_view.setImageURI(mUri)
+    private fun previewPicture() = picture_view.setImageURI(mUri)
 
     private fun saveFile() = Thread {
         //Selected status file
@@ -127,8 +127,7 @@ class MediaPreviewActivity : AppCompatActivity() {
         //The folder where we save file
         val dir = File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            "WhatsNery"
-        )
+            getString(R.string.app_name))
 
         dir.mkdir() //Create the folder, as it may not exist
 
@@ -151,17 +150,18 @@ class MediaPreviewActivity : AppCompatActivity() {
         addToGallery(dest.absolutePath)
 
         fabCircle.beginFinalAnimation()
-        showAd()
     }.run()
 
-    //Scans the file so as to make it visible in the gallery
+    /* Scans the file so as to make it visible in the gallery */
     private fun addToGallery(path: String) =
         MediaScannerConnection.scanFile(this, arrayOf(path), null) { _, _ -> }
 
     /* Shows an interstitial ad */
     private fun showAd() {
+
         if (mInterstitialAd.isLoaded)
             runOnUiThread { mInterstitialAd.show() }
+
         else
             mInterstitialAd.adListener = object : AdListener() {
                 override fun onAdLoaded() {

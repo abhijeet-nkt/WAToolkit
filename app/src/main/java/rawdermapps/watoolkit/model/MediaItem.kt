@@ -4,7 +4,7 @@ import android.media.MediaMetadataRetriever
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import rawdermapps.watoolkit.fragment.MediaType
+import rawdermapps.watoolkit.MediaType
 import java.io.File
 
 class MediaItem(val file: File, private val type: MediaType) {

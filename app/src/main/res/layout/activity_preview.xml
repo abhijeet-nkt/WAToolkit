@@ -40,24 +40,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
-    <com.github.jorgecastilloprz.FABProgressCircle
-        android:id="@+id/fabCircle"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="90dp"
-        android:clipToPadding="false"
-        android:padding="1dp"
-        app:arcColor="@color/colorPink"
-        android:layout_marginEnd="8dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
+        <com.github.jorgecastilloprz.FABProgressCircle
+            android:id="@+id/fabCircle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/ic_save" />
-    </com.github.jorgecastilloprz.FABProgressCircle>
+            android:layout_marginEnd="8dp"
+            android:clipToPadding="false"
+            android:padding="3dp"
+            app:arcColor="@color/colorPink"
+            app:arcWidth="3dp">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_save" />
+        </com.github.jorgecastilloprz.FABProgressCircle>
+    </RelativeLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

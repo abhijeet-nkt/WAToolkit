@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import rawdermapps.watoolkit.R
-import rawdermapps.watoolkit.fragment.MediaType
+import rawdermapps.watoolkit.MediaType
 import rawdermapps.watoolkit.model.MediaItem
 import java.io.File
 

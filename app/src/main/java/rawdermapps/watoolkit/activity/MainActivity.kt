@@ -26,9 +26,10 @@ import kotlinx.android.synthetic.main.activity_main_content.*
 import kotlinx.android.synthetic.main.appbar.*
 import rawdermapps.watoolkit.BuildConfig
 import rawdermapps.watoolkit.R
-import rawdermapps.watoolkit.fragment.MediaType
+import rawdermapps.watoolkit.MediaType
 import rawdermapps.watoolkit.fragment.StatusListFragment
 import rawdermapps.watoolkit.fragment.SendMessageFragment
+import rawdermapps.watoolkit.util.AppConstants
 import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.util.PreferenceManager
 
@@ -124,23 +125,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
         when (item.itemId) {
             R.id.nav_about -> startActivity(Intent(this, AboutAppActivity::class.java))
-            R.id.nav_rate -> {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=rawdermapps.watoolkit")
-                    )
-                )
-            }
+
+            R.id.nav_rate -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.APP_MARKET_LINK)))
+
             R.id.nav_share -> {
                 Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
-                    putExtra(
-                        Intent.EXTRA_TEXT,
-                        "http://play.google.com/store/apps/details?id=rawdermapps.watoolkit"
+                    putExtra(Intent.EXTRA_TEXT,
+                        "${getString(R.string.share_text)}\n${AppConstants.APP_SHARE_LINK}"
                     )
                     startActivity(Intent.createChooser(this, "Share with..."))
                 }
@@ -237,15 +231,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             )
         ) {
             AlertDialog.Builder(this)
-                .setMessage("We need permission in order to save your status")
-                .setPositiveButton("Okay") { dialog, _ ->
+                .setMessage(R.string.info_storage_permission)
+                .setPositiveButton(R.string.act_ok) { dialog, _ ->
                     dialog.dismiss()
                     ActivityCompat.requestPermissions(
                         this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         MediaPreviewActivity.REQUEST_WRITE_EXTERNAL_STORAGE
                     )
                 }
-                .setNegativeButton("Cancel") { dialog, _ ->
+                .setNegativeButton(R.string.act_cancel) { dialog, _ ->
                     dialog.dismiss()
                     //Change to message tab (User canceled)
                     bottom_navgation.selectedItemId = R.id.navigation_send_message
@@ -254,11 +248,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             //User clicked 'deny' with 'do not ask again'
         } else {
             AlertDialog.Builder(this)
-                .setMessage(
-                    "We need permission in order to save your status./n" +
-                            "You'll be sent to settings to turn on permissions"
-                )
-                .setPositiveButton("Okay") { dialog, _ ->
+                .setMessage(R.string.info_storage_permission_denied)
+                .setPositiveButton(R.string.act_ok) { dialog, _ ->
                     dialog.dismiss()
                     //Send user to app settings page
                     Intent().apply {
@@ -267,7 +258,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         startActivity(this)
                     }
                 }
-                .setNegativeButton("Cancel") { dialog, _ ->
+                .setNegativeButton(R.string.act_cancel) { dialog, _ ->
                     dialog.dismiss()
                     //Change to message tab (User canceled)
                     bottom_navgation.selectedItemId = R.id.navigation_send_message

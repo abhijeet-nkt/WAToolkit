@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import rawdermapps.watoolkit.MediaType
 import rawdermapps.watoolkit.R
 import rawdermapps.watoolkit.activity.MediaPreviewActivity
 import rawdermapps.watoolkit.adapter.MediaFilesAdapter
