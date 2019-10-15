@@ -13,7 +13,7 @@ import rawdermapps.watoolkit.model.MediaItem
 import java.io.File
 
 class MediaFilesAdapter(
-    mediaType: MediaType,
+    private val mediaType: MediaType,
     private val onClick: (MediaItem) -> Unit
 ) :
     RecyclerView.Adapter<MediaFilesAdapter.ViewHolder>() {
@@ -30,31 +30,29 @@ class MediaFilesAdapter(
     private val items = ArrayList<MediaItem>()
 
     /* True if there are no files */
-    var isEmpty: Boolean = false
+    var isEmpty: Boolean = true
         private set
 
-    init {
+    /* Starts populating the recycler view by loading the files */
+    fun loadList() {
+
+        /* Get the extension based on the media type */
         val extension = when (mediaType) {
             MediaType.PICTURE -> ".jpg"
             MediaType.VIDEO -> ".mp4"
         }
 
         val statusDir = File(Environment.getExternalStorageDirectory(), "/WhatsApp/Media/.Statuses")
-        Log.d("Adapter", "statusDir: $statusDir")
-
         val files = statusDir.listFiles()
         isEmpty = files.isEmpty()
 
         Thread {
             if (files == null)
                 Log.e("FilesAdapter", "files == null !")
-            else {
-                for (file in files) {
-                    if (file.name.endsWith(extension, true))
-                        items.add(MediaItem(file, mediaType))
-                    Log.d("Adapter", "file added: ${file.name}")
-                }
-            }
+
+            else for (file in files)
+                if (file.name.endsWith(extension, true))
+                    items.add(MediaItem(file, mediaType))
         }.start()
     }
 

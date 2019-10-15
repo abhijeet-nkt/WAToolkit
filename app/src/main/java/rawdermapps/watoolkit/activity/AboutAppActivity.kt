@@ -16,12 +16,7 @@ import rawdermapps.watoolkit.R
 class AboutAppActivity : AppCompatActivity() {
 
     private lateinit var listAdapter: ArrayAdapter<String>
-
-    private val listItems = arrayOf(
-        getString(R.string.hint_contact_us),
-        getString(R.string.hint_open_source_licences),
-        getString(R.string.hint_privacy_policy)
-    )
+    private lateinit var listItems : Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +24,12 @@ class AboutAppActivity : AppCompatActivity() {
 
         setSupportActionBar(findViewById(R.id.appbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        listItems = arrayOf(
+            getString(R.string.hint_contact_us),
+            getString(R.string.hint_open_source_licences),
+            getString(R.string.hint_privacy_policy)
+        )
 
         tv_app_ver.text = "${getString(R.string.app_name)} ${AppConstants.APP_VERSION}"
 

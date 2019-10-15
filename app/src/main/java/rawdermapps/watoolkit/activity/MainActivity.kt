@@ -15,6 +15,7 @@ import androidx.core.app.NavUtils
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -125,8 +126,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
         when (item.itemId) {
-            R.id.nav_about -> startActivity(Intent(this, AboutAppActivity::class.java))
 
             R.id.nav_rate -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.APP_MARKET_LINK)))
 
@@ -139,6 +140,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     startActivity(Intent.createChooser(this, "Share with..."))
                 }
             }
+
+            R.id.nav_play_intro -> startActivity(Intent(this, IntroActivity::class.java))
+
+            R.id.nav_about -> startActivity(Intent(this, AboutAppActivity::class.java))
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -146,7 +151,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-
         if (item?.itemId == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this)
             return true
@@ -167,11 +171,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val mBottomNavigationItemListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
+            val transaction = mFragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+
             when (item.itemId) {
                 // 'Send message' tab
                 R.id.navigation_send_message -> {
                     currentFragment = sendMessageFragment
-                    mFragmentManager.beginTransaction()
+                    transaction
                         .replace(R.id.container, currentFragment)
                         .commit()
                     supportActionBar?.title = ""
@@ -181,7 +188,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // 'Picture status' tab
                 R.id.navigation_image_status -> {
                     currentFragment = imageStatusFragment
-                    storagePermissionFlow() //This handles the replacing of fragment
+                    transaction
+                        .replace(R.id.container, currentFragment)
+                        .commit()
                     supportActionBar?.title = getString(R.string.app_name)
                     return@OnNavigationItemSelectedListener true
                 }
@@ -189,7 +198,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // 'Video status' tab
                 R.id.navigation_video_status -> {
                     currentFragment = videoStatusFragment
-                    storagePermissionFlow() //This handles the replacing of fragment
+                    transaction
+                        .replace(R.id.container, currentFragment)
+                        .commit()
                     supportActionBar?.title = getString(R.string.app_name)
                     return@OnNavigationItemSelectedListener true
                 }
@@ -198,90 +209,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-    /* Simply requests the permission
-     * onRequestPermissionResult() is instantly called after this */
-    private fun storagePermissionFlow() {
-        //Request if there's no permission
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                MediaPreviewActivity.REQUEST_WRITE_EXTERNAL_STORAGE
-            )
-
-        } else {
-            //We have the permission
-            //Replace the fragment
-
-            mFragmentManager.beginTransaction()
-                .replace(R.id.container, currentFragment)
-                .commit()
-        }
-    }
-
-    /* Shows a proper dialog for telling user about permission
-     * This function should only be called when user denied the permission request */
-    private fun showStoragePermissionRequestDialog() {
-
-        //User clicked 'deny'
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        ) {
-            AlertDialog.Builder(this)
-                .setMessage(R.string.info_storage_permission)
-                .setPositiveButton(R.string.act_ok) { dialog, _ ->
-                    dialog.dismiss()
-                    ActivityCompat.requestPermissions(
-                        this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        MediaPreviewActivity.REQUEST_WRITE_EXTERNAL_STORAGE
-                    )
-                }
-                .setNegativeButton(R.string.act_cancel) { dialog, _ ->
-                    dialog.dismiss()
-                    //Change to message tab (User canceled)
-                    bottom_navgation.selectedItemId = R.id.navigation_send_message
-                }.setCancelable(false).create().show()
-
-            //User clicked 'deny' with 'do not ask again'
-        } else {
-            AlertDialog.Builder(this)
-                .setMessage(R.string.info_storage_permission_denied)
-                .setPositiveButton(R.string.act_ok) { dialog, _ ->
-                    dialog.dismiss()
-                    //Send user to app settings page
-                    Intent().apply {
-                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        data = Uri.fromParts("package", packageName, null)
-                        startActivity(this)
-                    }
-                }
-                .setNegativeButton(R.string.act_cancel) { dialog, _ ->
-                    dialog.dismiss()
-                    //Change to message tab (User canceled)
-                    bottom_navgation.selectedItemId = R.id.navigation_send_message
-                }.setCancelable(false).create().show()
-        }
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+        grantResults: IntArray) {
+
         when (requestCode) {
-            MediaPreviewActivity.REQUEST_WRITE_EXTERNAL_STORAGE -> {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //Reload the fragment
-                    mFragmentManager.beginTransaction()
-                        .replace(R.id.container, currentFragment)
-                        .commit()
-                } else {
-                    //Keep trying until user allows the permission, lol
-                    showStoragePermissionRequestDialog()
-                }
+            StatusListFragment.PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE -> {
+                if (currentFragment is StatusListFragment)
+                    (currentFragment as StatusListFragment)
+                        .onPermissionResult(
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
             }
 
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)

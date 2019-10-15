@@ -15,6 +15,11 @@
             android:title="@string/act_share" />
 
         <item
+            android:id="@+id/nav_play_intro"
+            android:icon="@drawable/ic_help"
+            android:title="@string/act_play_intro" />
+
+        <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_about"
             android:title="@string/act_about_app" />
