@@ -13,15 +13,19 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
 import rawdermapps.watoolkit.MediaType
 import rawdermapps.watoolkit.R
 import rawdermapps.watoolkit.activity.MainActivity
 import rawdermapps.watoolkit.activity.MediaPreviewActivity
 import rawdermapps.watoolkit.adapter.MediaFilesAdapter
 import rawdermapps.watoolkit.model.MediaItem
+import rawdermapps.watoolkit.util.PreferenceManager
 
 class StatusListFragment : Fragment() {
 
@@ -127,6 +131,53 @@ class StatusListFragment : Fragment() {
         if (mAdapter.isEmpty)
             view?.findViewById<TextView>(R.id.tv_no_items)
                 ?.visibility = View.VISIBLE
+
+        if (!PreferenceManager(mParentActivity).isPreviewThroughCompleted) {
+            mRecycler.addOnChildAttachStateChangeListener(object :
+
+                RecyclerView.OnChildAttachStateChangeListener {
+                override fun onChildViewAttachedToWindow(firstView: View) {
+
+                    //We just want to do it once
+                    mRecycler.removeOnChildAttachStateChangeListener(this)
+
+                    TapTargetSequence(mParentActivity)
+                        .target(
+                            TapTarget.forView(
+                                firstView,
+                                "Preview status",
+                                "Tap a status thumbnail to get it's preview!"
+                            )
+                                .drawShadow(true)
+                                .targetCircleColor(R.color.colorAppBlue)
+                                .targetCircleColor(R.color.white)
+                                .outerCircleAlpha(.9f)
+                                .icon(
+                                    ContextCompat.getDrawable(
+                                        mParentActivity,
+                                        R.drawable.ic_touch
+                                    )
+                                )
+                                .descriptionTextAlpha(1f)
+                        )
+                        .listener(object : TapTargetSequence.Listener {
+                            override fun onSequenceFinish() {
+                                mRecycler.findViewHolderForLayoutPosition(0)
+                                    ?.itemView?.callOnClick()
+                                PreferenceManager(mParentActivity).isPreviewThroughCompleted = true
+                            }
+
+                            //Not used
+                            override fun onSequenceCanceled(lastTarget: TapTarget?) {}
+                            override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {}
+                        })
+                        .start()
+                }
+
+                //Not used
+                override fun onChildViewDetachedFromWindow(view: View) {}
+            })
+        }
     }
 
     /* Called when an item from recycler view is clicked */

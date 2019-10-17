@@ -7,6 +7,10 @@ import android.os.Environment
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -21,6 +25,7 @@ import rawdermapps.watoolkit.BuildConfig
 import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.R
 import rawdermapps.watoolkit.MediaType
+import rawdermapps.watoolkit.util.PreferenceManager
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -32,8 +37,6 @@ class MediaPreviewActivity : AppCompatActivity() {
             "rawdermapps.watoolkit.activity.MediaPreviewActivity.EXTRA_FILE_PATH"
         const val EXTRA_MEDIA_TYPE =
             "rawdermapps.watoolkit.activity.MediaPreviewActivity.EXTRA_MEDIA_TYPE"
-
-        const val REQUEST_WRITE_EXTERNAL_STORAGE = 20
     }
 
     //True when fab is once pressed by user
@@ -84,6 +87,33 @@ class MediaPreviewActivity : AppCompatActivity() {
                 fabCircle.show()
                 saveFile()
             }
+        }
+
+        if (!PreferenceManager(this).isSaveWalkThroughCompleted) {
+            TapTargetSequence(this)
+                .target(
+                    TapTarget.forView(
+                        fab,
+                        "One more last step!",
+                        "Tap on the action button to save this status to your gallery!"
+                    )
+                        .drawShadow(true)
+                        .targetCircleColor(R.color.colorAppBlue)
+                        .targetCircleColor(R.color.white)
+                        .icon(ContextCompat.getDrawable(this, R.drawable.ic_save))
+                        .descriptionTextAlpha(1f)
+                )
+                .listener(object : TapTargetSequence.Listener {
+                    override fun onSequenceFinish() {
+                        fab.callOnClick()
+                        PreferenceManager(this@MediaPreviewActivity).isSaveWalkThroughCompleted = true
+                    }
+
+                    //Not used
+                    override fun onSequenceCanceled(lastTarget: TapTarget?) {}
+                    override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {}
+                })
+                .start()
         }
 
         //Set up interstitial ads
@@ -158,10 +188,8 @@ class MediaPreviewActivity : AppCompatActivity() {
 
     /* Shows an interstitial ad */
     private fun showAd() {
-
         if (mInterstitialAd.isLoaded)
             runOnUiThread { mInterstitialAd.show() }
-
         else
             mInterstitialAd.adListener = object : AdListener() {
                 override fun onAdLoaded() {

@@ -3,6 +3,7 @@ package rawdermapps.watoolkit.activity
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -12,10 +13,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NavUtils
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -24,7 +28,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_content.*
+import kotlinx.android.synthetic.main.activity_preview.*
 import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.appbar.appbar
+import kotlinx.android.synthetic.main.frag_send_message.*
 import rawdermapps.watoolkit.BuildConfig
 import rawdermapps.watoolkit.R
 import rawdermapps.watoolkit.MediaType
@@ -33,6 +40,7 @@ import rawdermapps.watoolkit.fragment.SendMessageFragment
 import rawdermapps.watoolkit.util.AppConstants
 import rawdermapps.watoolkit.util.GoogleAdsHelper
 import rawdermapps.watoolkit.util.PreferenceManager
+import rawdermapps.watoolkit.util.getTabViewAt
 
 /* This activity doesn't handles much of the app's logic
  * It just links the fragments to the bottom navigation bar
@@ -57,10 +65,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (!PreferenceManager(this).isIntroPlayed)
-            startActivity(Intent(this, IntroActivity::class.java))
-
         setContentView(R.layout.activity_main)
 
         //Appbar
@@ -89,6 +93,75 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
 
+        if (!PreferenceManager(this).isMainWalkThroughCompleted) {
+            bottom_navgation.post {
+
+                val imageTab = bottom_navgation.getTabViewAt(1)
+                val videoTab = bottom_navgation.getTabViewAt(2)
+
+                val sendButtonCoords = intArrayOf(0, 0)
+                button_send.getLocationInWindow(sendButtonCoords)
+                val sendButtonBounds = Rect(sendButtonCoords[0],
+                    sendButtonCoords[1],
+                    sendButtonCoords[0] + button_send.width,
+                    sendButtonCoords[1] + button_send.height)
+
+                TapTargetSequence(this)
+                    .targets(
+
+                        TapTarget.forBounds(sendButtonBounds,
+                            "Welcome to WhatsNery!",
+                            "Add chats to WhatsApp without saving their phone number!" +
+                                    "\nJust fill in the phone number in the given field and tap " +
+                                    "this button.")
+                            .drawShadow(true)
+                            .targetCircleColor(R.color.colorAppBlue)
+                            .targetCircleColor(R.color.white)
+                            .icon(ContextCompat.getDrawable(this, R.drawable.ic_touch))
+                            .descriptionTextAlpha(1f),
+
+                        TapTarget.forView(
+                            imageTab,
+                            "Image status",
+                            "Use this tab to see all your Images in WhatsApp statuses!"
+                        )
+                            .drawShadow(true)
+                            .targetCircleColor(R.color.colorAppBlue)
+                            .targetCircleColor(R.color.white)
+                            .icon(ContextCompat.getDrawable(this, R.drawable.ic_image))
+                            .descriptionTextAlpha(1f),
+                        TapTarget.forView(
+                            videoTab,
+                            "Your videos are here!",
+                            "Video statuses are arranged here separately for your convenience"
+                        )
+                            .drawShadow(true)
+                            .targetCircleColor(R.color.colorAppBlue)
+                            .targetCircleColor(R.color.white)
+                            .icon(ContextCompat.getDrawable(this, R.drawable.ic_video))
+                            .descriptionTextAlpha(1f)
+                        )
+
+                    .listener(object : TapTargetSequence.Listener {
+                        override fun onSequenceFinish() {
+                            imageTab.callOnClick()
+                            PreferenceManager(this@MainActivity).isMainWalkThroughCompleted =
+                                true
+                        }
+
+                        //Not used
+                        override fun onSequenceCanceled(lastTarget: TapTarget?) {}
+
+                        override fun onSequenceStep(
+                            lastTarget: TapTarget?,
+                            targetClicked: Boolean
+                        ) {
+                        }
+                    })
+                    .start()
+            }
+        }
+
         //Set-up banner ads
         MobileAds.initialize(this) {}
         AdView(this).apply {
@@ -104,7 +177,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             bannerAdHolder.addView(this)
         }
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -141,7 +213,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
-            R.id.nav_play_intro -> startActivity(Intent(this, IntroActivity::class.java))
+            R.id.nav_play_intro -> {
+                PreferenceManager(this).apply {
+                    isSaveWalkThroughCompleted = false
+                    isMainWalkThroughCompleted = false
+                    isPreviewThroughCompleted = false
+                    recreate()
+                }
+            }
 
             R.id.nav_about -> startActivity(Intent(this, AboutAppActivity::class.java))
         }
