@@ -1,0 +1,14 @@
+#!/bin/bash
+
+./gradlew assembleRelease
+
+zipalign -v -p 4 \
+ ./app/build/outputs/apk/release/app-release-unsigned.apk \
+./app/build/outputs/apk/release/unsigned-aligned.apk
+
+apksigner \
+sign --ks /mnt/family/Abhijeet/Documents/Rawderm/AndroidKeys/rawdermapps.jks \
+--out ./app/build/outputs/apk/release/release.apk \
+./app/build/outputs/apk/release/unsigned-aligned.apk
+
+dolphin --select ./app/build/outputs/apk/release/release.apk
