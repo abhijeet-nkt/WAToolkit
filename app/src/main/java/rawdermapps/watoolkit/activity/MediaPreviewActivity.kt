@@ -95,14 +95,14 @@ class MediaPreviewActivity : AppCompatActivity() {
                     TapTarget.forView(
                         fab,
                         "One more last step!",
-                        "Tap on the action button to save this status to your gallery!"
-                    )
+                        "Tap on the action button to save this status to your gallery!")
                         .drawShadow(true)
                         .targetCircleColor(R.color.colorAppBlue)
                         .targetCircleColor(R.color.white)
                         .icon(ContextCompat.getDrawable(this, R.drawable.ic_save))
                         .descriptionTextAlpha(1f)
-                )
+                        .cancelable(false))
+
                 .listener(object : TapTargetSequence.Listener {
                     override fun onSequenceFinish() {
                         fab.callOnClick()

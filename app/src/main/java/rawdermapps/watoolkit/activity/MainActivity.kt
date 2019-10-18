@@ -118,28 +118,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             .targetCircleColor(R.color.colorAppBlue)
                             .targetCircleColor(R.color.white)
                             .icon(ContextCompat.getDrawable(this, R.drawable.ic_touch))
-                            .descriptionTextAlpha(1f),
+                            .descriptionTextAlpha(1f)
+                            .cancelable(false),
 
                         TapTarget.forView(
                             imageTab,
                             "Image status",
-                            "Use this tab to see all your Images in WhatsApp statuses!"
-                        )
+                            "Use this tab to see all your Images in WhatsApp statuses!")
                             .drawShadow(true)
                             .targetCircleColor(R.color.colorAppBlue)
                             .targetCircleColor(R.color.white)
                             .icon(ContextCompat.getDrawable(this, R.drawable.ic_image))
-                            .descriptionTextAlpha(1f),
+                            .descriptionTextAlpha(1f)
+                            .cancelable(false),
+
                         TapTarget.forView(
                             videoTab,
                             "Your videos are here!",
-                            "Video statuses are arranged here separately for your convenience"
-                        )
+                            "Video statuses are arranged here separately for your convenience")
                             .drawShadow(true)
                             .targetCircleColor(R.color.colorAppBlue)
                             .targetCircleColor(R.color.white)
                             .icon(ContextCompat.getDrawable(this, R.drawable.ic_video))
                             .descriptionTextAlpha(1f)
+                            .cancelable(false)
                         )
 
                     .listener(object : TapTargetSequence.Listener {

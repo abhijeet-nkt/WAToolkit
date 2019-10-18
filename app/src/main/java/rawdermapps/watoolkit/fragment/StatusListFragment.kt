@@ -155,11 +155,9 @@ class StatusListFragment : Fragment() {
                                 .icon(
                                     ContextCompat.getDrawable(
                                         mParentActivity,
-                                        R.drawable.ic_touch
-                                    )
-                                )
+                                        R.drawable.ic_touch))
                                 .descriptionTextAlpha(1f)
-                        )
+                                .cancelable(false))
                         .listener(object : TapTargetSequence.Listener {
                             override fun onSequenceFinish() {
                                 mRecycler.findViewHolderForLayoutPosition(0)
