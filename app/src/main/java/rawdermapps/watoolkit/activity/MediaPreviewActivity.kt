@@ -1,16 +1,19 @@
 package rawdermapps.watoolkit.activity
 
+import android.graphics.RectF
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
-import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -29,6 +32,8 @@ import rawdermapps.watoolkit.util.PreferenceManager
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import kotlin.math.max
+import kotlin.math.min
 
 class MediaPreviewActivity : AppCompatActivity() {
 
@@ -47,7 +52,6 @@ class MediaPreviewActivity : AppCompatActivity() {
     private lateinit var mMediaType: MediaType
     private lateinit var mFilePath: String
     private lateinit var mUri: Uri
-
     private lateinit var mInterstitialAd: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {

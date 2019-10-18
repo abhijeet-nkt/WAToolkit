@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">WhatsNery</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -22,6 +22,7 @@
     <string name="act_about_app">About App</string>
     <string name="act_give_permission">Give permission</string>
     <string name="act_give_permission_from_settings">Take me to settings</string>
+    <string name="act_show_help">How to use</string>
 
     <string name="hint_contact_us">Contact us</string>
     <string name="hint_open_source_licences">Open source licences</string>
@@ -30,5 +31,4 @@
     <string name="warn_invalid_phone_number">Invalid phone number!</string>
 
     <string name="share_text">Hey! Check out the WhatsNery app on Google Play!\n I use it to save status images and videos from WhatsApp</string>
-    <string name="act_play_intro">Play intro</string>
 </resources>

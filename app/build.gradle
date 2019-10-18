@@ -11,8 +11,8 @@ android {
         applicationId "rawdermapps.watoolkit"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 8
-        versionName "1.4.0"
+        versionCode 9
+        versionName "1.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar' //Progress on FAB
     implementation 'com.github.franmontiel:AttributionPresenter:1.0.1' //Licence presenter
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0' //App walk-through
+    implementation 'com.github.MikeOrtiz:TouchImageView:2.2.0' //Picture zooming
 
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
